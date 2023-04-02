@@ -3,17 +3,17 @@
 describe('test api post user gorest', () => {
 
     let accessToken = '803b28451962a1f65264171a2385d2f37c8090951aaa7608333d1dbc2e0866c1'
-    let randomText = ""
-    let testEmail = ""
+    let randomText = "" //random email
+    let testEmail = "" //random email
 
     it('post user', ( )=> {
 
         var pattern = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-        for (var i = 0; i <10; i++)
-        randomText+=pattern.charAt(Math.floor(Math.random() * pattern.length));
-        testEmail = randomText + '@gmail.com'
+        for (var i = 0; i <10; i++) //random email
+        randomText+=pattern.charAt(Math.floor(Math.random() * pattern.length)); //random email
+        testEmail = randomText + '@gmail.com' //random email
 
-        cy.fixture('createuser').then((payload) =>{
+        cy.fixture('createuser').then((payload) =>{  //ambil data body Json di file createuser
 
         cy.request({
             method : 'POST',
@@ -36,8 +36,24 @@ describe('test api post user gorest', () => {
             expect(res.body.data).to.have.property("gender", payload.gender)
             expect(res.body.data).to.have.property( "status", payload.status)
         })
+        .then((resp) =>{
+        const userId = resp.body.id //validasi id dari data yang sudah ke create
+            cy.log("user id is : " + userId)
+            cy.request({
+                 method: 'GET',
+                 url: 'https://gorest.co.in/public/v1/users/'+userId,
+                 headers: {
+                     'Authorization': 'Bearer ' + accessToken
+                 }
+            }).then((res)=>{
+                 expect(res.status).to.eq(200)
+                 expect(res.body[0]).to.have.property('id', userId)
+                 expect(res.body[0]).to.have.property('name',payload.name)
+                 expect(res.body[0]).to.have.property('status',payload.status)
+                 expect(res.body[0]).to.have.property('email', testEmail)
+             })
+        })
+     
+        })
+        })
     })
-
-})
-
-})
