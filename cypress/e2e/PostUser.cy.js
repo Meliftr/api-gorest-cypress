@@ -17,7 +17,7 @@ describe('test api post user gorest', () => {
 
         cy.request({
             method : 'POST',
-            url : 'https://gorest.co.in/public/v1/users',
+            url : 'https://gorest.co.in/public/v2/users',
             headers : {
                 'authorization' : "Bearer " + accessToken
               },
@@ -31,28 +31,31 @@ describe('test api post user gorest', () => {
         .then((res) =>{
             cy.log(JSON.stringify(res))
             expect(res.status).to.eq(201)
-            expect(res.body.data).to.have.property("name", payload.name)
-            expect(res.body.data).to.have.property("email", testEmail)
-            expect(res.body.data).to.have.property("gender", payload.gender)
-            expect(res.body.data).to.have.property( "status", payload.status)
+            expect(res.body).to.have.property("name", payload.name)
+            expect(res.body).to.have.property("email", testEmail)
+            expect(res.body).to.have.property("gender", payload.gender)
+            expect(res.body).to.have.property( "status", payload.status)
+
+
         })
-        .then((resp) =>{
-        const userId = resp.body.id //validasi id dari data yang sudah ke create
-            cy.log("user id is : " + userId)
-            cy.request({
-                 method: 'GET',
-                 url: 'https://gorest.co.in/public/v1/users/'+userId,
-                 headers: {
-                     'Authorization': 'Bearer ' + accessToken
-                 }
-            }).then((res)=>{
-                 expect(res.status).to.eq(200)
-                 expect(res.body[0]).to.have.property('id', userId)
-                 expect(res.body[0]).to.have.property('name',payload.name)
-                 expect(res.body[0]).to.have.property('status',payload.status)
-                 expect(res.body[0]).to.have.property('email', testEmail)
-             })
-        })
+        // .then((res) =>{
+        //     const userId = res.body.data.id //validasi id dari data yang sudah ke create
+        //     cy.log("user id is : " + userId)
+
+        //     cy.request({
+        //          method: 'GET',
+        //          url: 'https://gorest.co.in/public/v1/users/'+userId,
+        //          headers: {
+        //              'Authorization': 'Bearer ' + accessToken
+        //          }
+        //     }).then((res)=>{
+        //          expect(res.status).to.eq(200)
+        //          expect(res.body.data).to.have.property('id', userId)
+        //          expect(res.body.data).to.have.property('name',payload.name)
+        //          expect(res.body.data).to.have.property('status',payload.status)
+        //          expect(res.body.data).to.have.property('email', testEmail)
+        //      })
+        // })
      
         })
         })

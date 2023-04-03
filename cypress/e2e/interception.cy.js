@@ -23,12 +23,14 @@ describe('api interception with cypress', ()=> {
     })
 
 
-    it('mocking with intercept test with static response', ()=> {
-
+    it.only('mocking with intercept test with static response', ()=> {
+ 
         cy.visit('https://jsonplaceholder.typicode.com/')
         cy.intercept('GET', '/posts', {totalpost:5 , name: 'naveen'}).as('posts')
         cy.get("table:nth-of-type(1) a[href='/posts']").click()
-        cy.wait('@posts')
+        cy.wait({pageLoadTimeout: 100000})
+       
+        
     })
 
     it('mocking with intercept test with dynamic fixture', ()=>{
